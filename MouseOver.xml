@@ -1,0 +1,151 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  
+  <Slider name="MySlider_Template" orientation="VERTICAL" enableMouse="true" virtual="true" minValue="0" maxValue="100" defaultValue="0">
+    <Size x="20" y="480"/>
+    <HitRectInsets left="0" right="0" top="-10" bottom="-10"/>
+    <Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background"
+        edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+      <EdgeSize val="8"/>
+      <TileSize val="8"/>
+      <BackgroundInsets left="3" right="3" top="6" bottom="6"/>
+    </Backdrop>
+    <ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-SliderBar-Button-Vertical">
+      <Size x="32" y="32"/>
+    </ThumbTexture>
+  </Slider>
+
+  <Frame name="ScrollableFrame" virtual="true" >
+	<Scripts>
+      <OnEnter>
+      </OnEnter>
+    </Scripts>
+	<Size x="400" y="500"/>
+ 
+    <Backdrop bgFile="Interface\TutorialFrame\TutorialFrameBackground"
+       edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+	<EdgeSize val="16"/>
+	<TileSize val="32"/>
+ 	<BackgroundInsets left="5" right="5" top="5" bottom="5"/>
+    </Backdrop>
+	<Frames>
+		
+		 <ScrollFrame name="ScrollFrame" hidden="false" parentKey="scrollable">
+			<Size x="380" y="480"/>
+			<Anchors>
+				<Anchor point="TOPRIGHT">
+					<Offset x="0" y="-10"/>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+			<OnMouseWheel>
+				local value = self:GetVerticalScroll()
+				local minValue, maxValue = self.slider:GetMinMaxValues()
+				local newValue = value + delta * -10
+				if (newValue >= minValue and newValue &lt; maxValue) then
+					self:SetVerticalScroll(newValue)
+					self.slider:SetValue(newValue)
+				end
+			</OnMouseWheel>
+			</Scripts>
+			<Frames>
+				<Slider name="SliderAdd" inherits="MySlider_Template" parentKey="slider">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-10" y="0"/>
+						</Anchor>
+					  </Anchors>
+					<Scripts>
+					  <OnValueChanged>
+						self:GetParent():SetVerticalScroll(value) 
+					  </OnValueChanged>
+					</Scripts>     
+				</Slider>
+				<Frame name="ScrollContent" hidden="false"  parentKey="content">
+					<Size x="400" y="480"/>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+					<Scripts>
+						<OnLoad>
+							self:GetParent():SetScrollChild(self)
+						</OnLoad>
+					</Scripts>
+				</Frame>
+			</Frames>
+		  </ScrollFrame>
+		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="Close">
+		  <Anchors>
+			<Anchor point="BOTTOMRIGHT">
+			  <Offset x="-12" y="16"/>
+			</Anchor> 
+		  </Anchors>
+		  <Scripts>
+			<OnClick> self:GetParent():Hide(); </OnClick>
+		  </Scripts>
+		</Button>
+	</Frames>
+  </Frame>
+  
+ 
+ 
+ <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" >
+    <Anchors>
+        <Anchor point="RIGHT"/>
+    </Anchors>
+	<Frames>
+		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="Add Mousover" parentKey="buttonAdd">
+		  	<Size x="200" y="30"/>
+		  <Anchors>
+			<Anchor point="TOP">
+				<Offset y="-16"/>
+			</Anchor> 
+		  </Anchors>
+		  <Scripts>
+			<OnClick> self:GetParent():OpenAddMenu(); </OnClick>
+		  </Scripts>
+		</Button>
+		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply">
+		  	<Size x="200" y="30"/>
+		  <Anchors>
+			<Anchor point="BOTTOM" relativePoint="BOTTOM">
+				<Offset y="10"/>
+			</Anchor> 
+		  </Anchors>
+		  <Scripts>
+			<OnClick> self:GetParent():ApplyMouseOver(); </OnClick>
+		  </Scripts>
+		</Button>
+	</Frames>
+  </Frame>
+  
+ 
+  
+  <Frame name="SpellFrame" virtual="true">
+	<Size x="400" y="60"/>
+	<Layers>
+		<Layer>
+			<Texture name="$parentTexture" file="Interface\ItemSocketingFrame\UI-ItemSockets" parentArray="ListItems">
+				<Size x="60" y="60"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Texture>
+			<FontString name="$parentText" font="Fonts\\ARIALN.TTF" text="DefaultSpell"  parentArray="ListItems">
+				<Color a="1" r="0.6" g="0.6" b="0.6"/>
+				<FontHeight val="20"/>
+			  <Anchors>
+			   <Anchor point="LEFT" relativeTo="$parentTexture" relativePoint="RIGHT" >
+			   		<Offset x="10" y="0"/>
+			   </Anchor>
+			  </Anchors>
+			  <Shadow>
+				<Offset x="1" y="1" />
+				<Color r="0" g="0" b="0"/>
+			  </Shadow>
+			</FontString>
+		</Layer>
+	</Layers>
+  </Frame>
+</Ui>

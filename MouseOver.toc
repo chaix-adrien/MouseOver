@@ -1,0 +1,8 @@
+## Interface: 60200
+## Title: MouseOver
+## Notes: MouseOver for simple heal
+## Secure: 1
+## Author: Adrien Chaix
+## Version: 1.0
+MouseOver.xml
+MouseOver.lua
