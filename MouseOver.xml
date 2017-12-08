@@ -75,7 +75,7 @@
 				</Frame>
 			</Frames>
 		  </ScrollFrame>
-		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="Close" parentKey="buttonClose" frameStrata="HIGH">
+		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="CLOSE" parentKey="buttonClose" frameStrata="HIGH">
 		  <Anchors>
 			<Anchor point="BOTTOMRIGHT">
 			  <Offset x="-12" y="16"/>
@@ -91,12 +91,11 @@
  
  
  <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" >
-    <Size x="400" y="580"/>
 	<Anchors>
         <Anchor point="RIGHT"/>
     </Anchors>
 	<Frames>
-		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="Add Mousover" parentKey="buttonAdd" frameStrata="HIGH">
+		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="ADD" parentKey="buttonAdd" frameStrata="HIGH">
 		  	<Size x="200" y="30"/>
 		  <Anchors>
 			<Anchor point="TOP">
@@ -105,17 +104,6 @@
 		  </Anchors>
 		  <Scripts>
 			<OnClick> self:GetParent():OpenAddMenu(); </OnClick>
-		  </Scripts>
-		</Button>
-		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply" frameStrata="HIGH">
-		  	<Size x="200" y="30"/>
-		  <Anchors>
-			<Anchor point="BOTTOM" relativePoint="BOTTOM">
-				<Offset y="10"/>
-			</Anchor> 
-		  </Anchors>
-		  <Scripts>
-			<OnClick> self:GetParent():ApplyMouseOver(); </OnClick>
 		  </Scripts>
 		</Button>
 	</Frames>

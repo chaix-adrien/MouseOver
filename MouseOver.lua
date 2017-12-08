@@ -1,7 +1,5 @@
 MouseOverMainFrame:RegisterEvent("ADDON_LOADED"); -- Fired when saved variables are loaded
 MouseOverMainFrame:RegisterEvent("PLAYER_LOGOUT"); -- Fired when about to log out
-
-
 function MouseOverMainFrame:OnEvent(event, arg1)
 	if (event == "ADDON_LOADED" and arg1 == "MouseOver") then
 		if (MouseOverSaved == nil) then
@@ -11,19 +9,16 @@ function MouseOverMainFrame:OnEvent(event, arg1)
 		MouseOverMainFrame:LoadSpellMO()
 	end
 	
-end
- 
+end 
 MouseOverMainFrame:SetScript("OnEvent", MouseOverMainFrame.OnEvent);
 
-
-
-
-local MouseOverAddMenu = CreateFrame("Frame", "MouseOverAddMenu", MouseOverMainFrame, "ScrollableFrame")
+MouseOverAddMenu = CreateFrame("Frame", "MouseOverAddMenu", MouseOverMainFrame, "ScrollableFrame")
 MouseOverAddMenu:Hide()
 MouseOverMainFrame.scrollable:ClearAllPoints()
 MouseOverMainFrame.scrollable:SetPoint("TOP", MouseOverMainFrame.buttonAdd, "BOTTOM", 10, -10)
 MouseOverMainFrame.scrollable.slider:SetHeight(MouseOverMainFrame.scrollable:GetHeight())
-
+MouseOverMainFrame.scrollable:SetHeight(400)
+MouseOverMainFrame.scrollable.slider:SetHeight(400)
 
 function GetMySpellInfo(spellID)
 	local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(spellID)
@@ -31,11 +26,27 @@ function GetMySpellInfo(spellID)
 end
 
 function MouseOverMainFrame:LoadSpellMO()
+	local childs = {MouseOverMainFrame.scrollable.content:GetChildren()};
+	for _, child in ipairs(childs) do
+		child:Hide()
+	end
 	MouseOverSaved.SpellMOCount = 0
 	for name,spell in pairs(MouseOverSaved.SpellMO) do
 		print(name)
 		MouseOverMainFrame:AddSpellToMO(MouseOverMainFrame:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
 	end
+end
+
+function MouseOverMainFrame:RemoveSpellToMO(frame)
+	for spellName, spell in pairs(MouseOverSaved.SpellMO) do
+		if (spell.name == frame.spell.name) then
+			MouseOverSaved.SpellMO[spellName] = nil
+		end
+	end
+	if (MouseOverAddMenu:IsVisible()) then
+		MouseOverMainFrame:OpenAddMenu()
+	end
+	MouseOverMainFrame:LoadSpellMO()
 end
 
 function MouseOverMainFrame:AddSpellToMO(frame)
@@ -45,12 +56,39 @@ function MouseOverMainFrame:AddSpellToMO(frame)
 	frame:ClearAllPoints()
 	frame:SetPoint("TOPLEFT", 20, -70 * (MouseOverSaved.SpellMOCount - 1))
 	frame:SetScript("OnMouseDown", nil)
+	frame:SetScript("OnEnter", function(self, motion)
+		local backdrop = {bgFile = nil, edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border", tile = true, tileSize = 32, edgeSize = 16, insets = {left = 0, right = 40, top = 0, bottom = 0}}
+		self:SetBackdrop(backdrop)
+		if (self.removeButton) then
+			self.removeButton:Show()
+		else
+			self.removeButton = CreateFrame("Button", "removeButton", self)
+			self.removeButton:SetSize(30, 30)
+			self.removeButton:SetPoint("RIGHT", -10, 0)
+			self.removeButton:SetNormalTexture("Interface\\BUTTONS\\UI-GROUPLOOT-PASS-DOWN.BLP")
+			self.removeButton:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up.blp")
+			self.removeButton:SetScript("OnClick", function(self, motion)
+				MouseOverMainFrame:RemoveSpellToMO(self:GetParent())
+			end)
+		end
+	end)
 	
+	frame:SetScript("OnLeave", function(self, motion)
+	local doit = false
+	if (self.removeButton == nil) then doit = true
+	elseif (self.removeButton:IsMouseOver() == false) then doit = true end
+	if (doit) then
+			local backdrop = {bgFile = nil, edgeFile = nil, tile = true, tileSize = 32, edgeSize = 16, insets = {left = 11, right = 12, top = 12, bottom = 11}}
+			self:SetBackdrop(backdrop)
+			if (self.removeButton) then self.removeButton:Hide() end
+		end
+	end)
 	if (MouseOverSaved.SpellMOCount * 70 + 10 > MouseOverMainFrame.scrollable:GetHeight()) then
 		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, MouseOverSaved.SpellMOCount * 70 - MouseOverMainFrame.scrollable:GetHeight() + 10)
 	else
 		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, 1)
 	end
+	MouseOverMainFrame:ApplyMouseOver()
 end
 
 function MouseOverMainFrame:CreateSpellFrame(Spell, parent)
