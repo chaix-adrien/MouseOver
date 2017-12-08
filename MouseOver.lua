@@ -1,47 +1,59 @@
-Mouseover = {}
+MouseOverMainFrame:RegisterEvent("ADDON_LOADED"); -- Fired when saved variables are loaded
+MouseOverMainFrame:RegisterEvent("PLAYER_LOGOUT"); -- Fired when about to log out
+
+
+function MouseOverMainFrame:OnEvent(event, arg1)
+	if (event == "ADDON_LOADED" and arg1 == "MouseOver") then
+		if (MouseOverSaved == nil) then
+			MouseOverSaved = {}
+			MouseOverSaved.SpellMO = {}
+		end
+		MouseOverMainFrame:LoadSpellMO()
+	end
+	
+end
+ 
+MouseOverMainFrame:SetScript("OnEvent", MouseOverMainFrame.OnEvent);
+
+
+
 
 local MouseOverAddMenu = CreateFrame("Frame", "MouseOverAddMenu", MouseOverMainFrame, "ScrollableFrame")
 MouseOverAddMenu:Hide()
 MouseOverMainFrame.scrollable:ClearAllPoints()
 MouseOverMainFrame.scrollable:SetPoint("TOP", MouseOverMainFrame.buttonAdd, "BOTTOM", 10, -10)
-MouseOverMainFrame.scrollable:SetHeight(MouseOverMainFrame:GetHeight() - 70)
 MouseOverMainFrame.scrollable.slider:SetHeight(MouseOverMainFrame.scrollable:GetHeight())
 
-	
+
 function GetMySpellInfo(spellID)
 	local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(spellID)
 	return {name = name, icon = icon, spellID = spellID}
 end
 
-Mouseover.SpellMOCount = 1
-Mouseover.SpellMO = {}
-Mouseover.SpellMO["Esprit ancestral"]= GetMySpellInfo(2008)
-
 function MouseOverMainFrame:LoadSpellMO()
-	print("ici")
-	for name,spell in pairs(Mouseover.SpellMO) do
+	MouseOverSaved.SpellMOCount = 0
+	for name,spell in pairs(MouseOverSaved.SpellMO) do
 		print(name)
-		print(spell)
-		Mouseover:AddSpellToMO(Mouseover:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
+		MouseOverMainFrame:AddSpellToMO(MouseOverMainFrame:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
 	end
 end
 
-function Mouseover:AddSpellToMO(frame)
-	Mouseover.SpellMOCount = Mouseover.SpellMOCount + 1
-	Mouseover.SpellMO[frame.spell.name] = frame.spell
+function MouseOverMainFrame:AddSpellToMO(frame)
+	MouseOverSaved.SpellMOCount = MouseOverSaved.SpellMOCount + 1
+	MouseOverSaved.SpellMO[frame.spell.name] = frame.spell
 	frame:SetParent(MouseOverMainFrame.scrollable.content)
 	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", 20, -70 * (Mouseover.SpellMOCount - 2))
-	frame:SetScript("OnMouseDown", function(self, buton, down)
-	end)
-	if (Mouseover.SpellMOCount * 70 + 10 > MouseOverMainFrame.scrollable:GetHeight()) then
-		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, Mouseover.SpellMOCount * 70 - MouseOverMainFrame.scrollable:GetHeight() + 10)
+	frame:SetPoint("TOPLEFT", 20, -70 * (MouseOverSaved.SpellMOCount - 1))
+	frame:SetScript("OnMouseDown", nil)
+	
+	if (MouseOverSaved.SpellMOCount * 70 + 10 > MouseOverMainFrame.scrollable:GetHeight()) then
+		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, MouseOverSaved.SpellMOCount * 70 - MouseOverMainFrame.scrollable:GetHeight() + 10)
 	else
 		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, 1)
 	end
 end
 
-function Mouseover:CreateSpellFrame(Spell, parent)
+function MouseOverMainFrame:CreateSpellFrame(Spell, parent)
 	local frame = CreateFrame("Frame", "frameAdd" .. Spell.name, parent)
 	local texture = frame:CreateTexture("textureAdd" .. Spell.name)
 	local text = frame:CreateFontString("textAdd" .. Spell.name, "OVERLAY") 
@@ -68,11 +80,11 @@ end
 function MouseOverAddMenu:AddSpellToContent(Spell, range)
 	print("add")
 	print(Spell.name)
-	local frame = Mouseover:CreateSpellFrame(Spell, MouseOverAddMenu.scrollable.content)
+	local frame = MouseOverMainFrame:CreateSpellFrame(Spell, MouseOverAddMenu.scrollable.content)
 	frame:SetPoint("TOPLEFT", 30, -(range * 70) -10)
 	
 	frame:SetScript("OnMouseDown", function(self, buton, down)
-		Mouseover:AddSpellToMO(frame)
+		MouseOverMainFrame:AddSpellToMO(frame)
 		MouseOverMainFrame:OpenAddMenu()
 	end)
 end
@@ -94,7 +106,7 @@ MouseOverMainFrame["OpenAddMenu"] = function ()
 				local skillType, spellId = GetSpellBookItemInfo(tabOffset + j, "bookType")
 				local spell = GetMySpellInfo(spellId)
 				print(spell.name)
-				if (IsPlayerSpell(spell.spellID) and not Mouseover.SpellMO[spell.name]) then
+				if (IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name]) then
 					MouseOverAddMenu:AddSpellToContent(spell, count)
 					count = count + 1
 				end
@@ -110,33 +122,24 @@ MouseOverMainFrame["OpenAddMenu"] = function ()
 end
 
 function MouseOverMainFrame:ApplyMouseOver()
-	for spellName,spell in pairs(Mouseover.SpellMO) do
---		spell = Mouseover.SpellMO["Esprit ancestral"]
+	for spellName,spell in pairs(MouseOverSaved.SpellMO) do
 		local macroName = spell.name .. "_MouseOver__"
-		
 		if (GetMacroIndexByName(macroName) == 0) then
 			local macroID = CreateMacro(macroName, spell.icon, "", 1, 1)
 			EditMacro(macroID, macroName, spell.icon, "/say hi")
 		end
-		for i=1, 8 do
+		for i=1, 120 do
 			atype, id, subType, spellID = GetActionInfo(i)
 			if (atype == "spell" and subType == "spell") then
-				print(id)
 				local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(id)
-				print(name)
 				if (id == spell.spellID) then
-					print("slot " .. i)
 					PickupMacro(macroName)
 					PlaceAction(i)
 					ClearCursor()
 				end
 			end
 		end
-
-
 	end
-	print("aply")
 end
 
-MouseOverMainFrame:LoadSpellMO()
 

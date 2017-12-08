@@ -50,7 +50,7 @@
 			</OnMouseWheel>
 			</Scripts>
 			<Frames>
-				<Slider name="SliderAdd" inherits="MySlider_Template" parentKey="slider">
+				<Slider name="SliderAdd" inherits="MySlider_Template" parentKey="slider" frameStrata="HIGH">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="-10" y="0"/>
@@ -62,7 +62,7 @@
 					  </OnValueChanged>
 					</Scripts>     
 				</Slider>
-				<Frame name="ScrollContent" hidden="false"  parentKey="content">
+				<Frame name="ScrollContent" hidden="false"  parentKey="content" frameStrata="MEDIUM">
 					<Size x="400" y="480"/>
 					<Anchors>
 						<Anchor point="RIGHT"/>
@@ -75,7 +75,7 @@
 				</Frame>
 			</Frames>
 		  </ScrollFrame>
-		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="Close">
+		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="Close" parentKey="buttonClose" frameStrata="HIGH">
 		  <Anchors>
 			<Anchor point="BOTTOMRIGHT">
 			  <Offset x="-12" y="16"/>
@@ -91,11 +91,12 @@
  
  
  <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" >
-    <Anchors>
+    <Size x="400" y="580"/>
+	<Anchors>
         <Anchor point="RIGHT"/>
     </Anchors>
 	<Frames>
-		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="Add Mousover" parentKey="buttonAdd">
+		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="Add Mousover" parentKey="buttonAdd" frameStrata="HIGH">
 		  	<Size x="200" y="30"/>
 		  <Anchors>
 			<Anchor point="TOP">
@@ -106,7 +107,7 @@
 			<OnClick> self:GetParent():OpenAddMenu(); </OnClick>
 		  </Scripts>
 		</Button>
-		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply">
+		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply" frameStrata="HIGH">
 		  	<Size x="200" y="30"/>
 		  <Anchors>
 			<Anchor point="BOTTOM" relativePoint="BOTTOM">
