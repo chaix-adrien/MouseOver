@@ -20,6 +20,18 @@ MouseOverMainFrame.scrollable.slider:SetHeight(MouseOverMainFrame.scrollable:Get
 MouseOverMainFrame.scrollable:SetHeight(400)
 MouseOverMainFrame.scrollable.slider:SetHeight(400)
 
+SLASH_OPENMOUSEOVER1 = "/mouseover"
+SLASH_OPENMOUSEOVER2 = "/mo"
+SlashCmdList["OPENMOUSEOVER"] = function(msg)
+	MouseOverMainFrame:Open()
+end 
+
+function MouseOverMainFrame:Open()
+	MouseOverMainFrame:LoadSpellMO()
+	MouseOverAddMenu:Hide()
+	MouseOverMainFrame:Show()
+end
+
 function GetMySpellInfo(spellID)
 	local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(spellID)
 	return {name = name, icon = icon, spellID = spellID}
@@ -32,7 +44,6 @@ function MouseOverMainFrame:LoadSpellMO()
 	end
 	MouseOverSaved.SpellMOCount = 0
 	for name,spell in pairs(MouseOverSaved.SpellMO) do
-		print(name)
 		MouseOverMainFrame:AddSpellToMO(MouseOverMainFrame:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
 	end
 end
@@ -117,8 +128,6 @@ function MouseOverMainFrame:CreateSpellFrame(Spell, parent)
 	return frame
 end
 function MouseOverAddMenu:AddSpellToContent(Spell, range)
-	print("add")
-	print(Spell.name)
 	local frame = MouseOverMainFrame:CreateSpellFrame(Spell, MouseOverAddMenu.scrollable.content)
 	frame:SetPoint("TOPLEFT", 30, -(range * 70) -10)
 	
@@ -137,14 +146,12 @@ function MouseOverMainFrame:OpenAddMenu()
 	end
 	local count = 0
 	id, specName, description, icon, background, role, primaryStat = GetSpecializationInfo(GetSpecialization(), false, false, nil, nil)
-	print(name)
 	for i = 2, GetNumSpellTabs() do
 		local tabName,tabTexture, tabOffset, tabNumSpells = GetSpellTabInfo(i);
 		if (tabName == specName) then
 			for j = 1, tabNumSpells do
 				local skillType, spellId = GetSpellBookItemInfo(tabOffset + j, "bookType")
 				local spell = GetMySpellInfo(spellId)
-				print(spell.name)
 				if (IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name]) then
 					MouseOverAddMenu:AddSpellToContent(spell, count)
 					count = count + 1
@@ -196,7 +203,6 @@ function MouseOverMainFrame:RemoveMouseOver(spell)
 		if (atype == "macro") then
 			local name, iconTexture, body, isLocal = GetMacroInfo(id);
 			if (name == macroName) then
-				print("pickup " .. spell.name)
 				PickupSpell(spell.spellID)
 				PickupAction(i)
 				ClearCursor()
