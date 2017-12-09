@@ -160,12 +160,16 @@ function MouseOverMainFrame:OpenAddMenu()
 	MouseOverAddMenu:Show()
 end
 
+function MouseOverMainFrame:GetMacroBody(spellName)
+	return "#showtooltip " .. spellName .. "\n/cast [modifier, target=player] " .. spellName .. "\n/cast [target=mouseover, exists, help][] " .. spellName
+end
+
 function MouseOverMainFrame:ApplyMouseOver()
 	for spellName,spell in pairs(MouseOverSaved.SpellMO) do
-		local macroName = spell.name .. "_MouseOver__"
+		local macroName = MouseOverMainFrame:GetMacroName(spellName)
 		if (GetMacroIndexByName(macroName) == 0) then
 			local macroID = CreateMacro(macroName, spell.icon, "", 1, 1)
-			EditMacro(macroID, macroName, spell.icon, "/say hi")
+			EditMacro(macroID, macroName, spell.icon, MouseOverMainFrame:GetMacroBody(spellName))
 		end
 		for i=1, 120 do
 			atype, id, subType, spellID = GetActionInfo(i)
@@ -181,8 +185,12 @@ function MouseOverMainFrame:ApplyMouseOver()
 	end
 end
 
+function MouseOverMainFrame:GetMacroName(spellName)
+	return "        " .. spellName .. "_MouseOver__"
+end
+
 function MouseOverMainFrame:RemoveMouseOver(spell)
-	local macroName = spell.name .. "_MouseOver__"
+	local macroName = MouseOverMainFrame:GetMacroName(spell.name)
 	for i=1, 120 do
 		atype, id, subType, spellID = GetActionInfo(i)
 		if (atype == "macro") then
