@@ -20,6 +20,14 @@
 	<Scripts>
       <OnEnter>
       </OnEnter>
+	  <OnKeyDown>
+		if (key == "ESCAPE") then
+			self:Hide()
+			self:SetPropagateKeyboardInput(false)
+		else
+			self:SetPropagateKeyboardInput(true)
+		end
+	  </OnKeyDown>
     </Scripts>
 	<Size x="400" y="500"/>
  
