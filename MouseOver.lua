@@ -47,6 +47,7 @@ function MouseOverMainFrame:RemoveSpellToMO(frame)
 		MouseOverMainFrame:OpenAddMenu()
 	end
 	MouseOverMainFrame:LoadSpellMO()
+	MouseOverMainFrame:RemoveMouseOver(frame.spell)
 end
 
 function MouseOverMainFrame:AddSpellToMO(frame)
@@ -128,7 +129,7 @@ function MouseOverAddMenu:AddSpellToContent(Spell, range)
 end
 
 
-MouseOverMainFrame["OpenAddMenu"] = function () 
+function MouseOverMainFrame:OpenAddMenu() 
 	MouseOverAddMenu:SetPoint("RIGHT", MouseOverMainFrame, "LEFT", -10, 0)
 	local childs = {MouseOverAddMenu.scrollable.content:GetChildren()};
 	for _, child in ipairs(childs) do
@@ -180,4 +181,22 @@ function MouseOverMainFrame:ApplyMouseOver()
 	end
 end
 
+function MouseOverMainFrame:RemoveMouseOver(spell)
+	local macroName = spell.name .. "_MouseOver__"
+	for i=1, 120 do
+		atype, id, subType, spellID = GetActionInfo(i)
+		if (atype == "macro") then
+			local name, iconTexture, body, isLocal = GetMacroInfo(id);
+			if (name == macroName) then
+				print("pickup " .. spell.name)
+				PickupSpell(spell.spellID)
+				PickupAction(i)
+				ClearCursor()
+			end
+		end
+	end
+	DeleteMacro(macroName)
+end
+
+--MultipleBarD'action (option ?)
 

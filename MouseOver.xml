@@ -92,20 +92,34 @@
  
  <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" >
 	<Anchors>
-        <Anchor point="RIGHT"/>
+        <Anchor point="RIGHT">
+			<Offset x="-100"/>
+		</Anchor>
     </Anchors>
 	<Frames>
 		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="ADD" parentKey="buttonAdd" frameStrata="HIGH">
 		  	<Size x="200" y="30"/>
 		  <Anchors>
 			<Anchor point="TOP">
-				<Offset y="-16"/>
+				<Offset y="-20"/>
 			</Anchor> 
 		  </Anchors>
 		  <Scripts>
 			<OnClick> self:GetParent():OpenAddMenu(); </OnClick>
 		  </Scripts>
 		</Button>
+		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply" frameStrata="HIGH">
+		  	<Size x="150" y="30"/>
+		  <Anchors>
+			<Anchor point="BOTTOM" relativePoint="BOTTOM">
+				<Offset y="10"/>
+			</Anchor> 
+		  </Anchors>
+		  <Scripts>
+			<OnClick> self:GetParent():ApplyMouseOver(); </OnClick>
+		  </Scripts>
+		</Button>
+		
 	</Frames>
   </Frame>
   
