@@ -7,14 +7,17 @@ function MouseOverMainFrame:OnEvent(event, arg1)
 			MouseOverSaved.SpellMO = {}
 			
 		end
-		MouseOverMainFrame:LoadSpellMO()
+
 	end
-	
+	if (event == "UPDATE_MACROS") then
+		MouseOverMainFrame:LoadSpellMO()	
+	end
 end 
 MouseOverMainFrame:SetScript("OnEvent", MouseOverMainFrame.OnEvent);
 
 MouseOverAddMenu = CreateFrame("Frame", "MouseOverAddMenu", MouseOverMainFrame, "ScrollableFrame")
 MouseOverAddMenu:Hide()
+MouseOverMainFrame:Hide()
 MouseOverMainFrame.scrollable:ClearAllPoints()
 MouseOverMainFrame.scrollable:SetPoint("TOP", MouseOverMainFrame.buttonAdd, "BOTTOM", 10, -10)
 MouseOverMainFrame.scrollable.slider:SetHeight(MouseOverMainFrame.scrollable:GetHeight())
@@ -178,7 +181,15 @@ function MouseOverMainFrame:ApplyMouseOver()
 	for spellName,spell in pairs(MouseOverSaved.SpellMO) do
 		local macroName = MouseOverMainFrame:GetMacroName(spellName)
 		if (GetMacroIndexByName(macroName) == 0) then
-			local macroID = CreateMacro(macroName, spell.icon, "", 1, 1)
+			numAccountMacros, numCharacterMacros = GetNumMacros()
+			local macroID = 0
+			if (numCharacterMacros < 18) then
+				macroID = CreateMacro(macroName, spell.icon, "", 1, 1)
+			elseif (numAccountMacros < 36) then
+				macroID = CreateMacro(macroName, spell.icon, "", nil, 1)
+			else
+				return
+			end
 			EditMacro(macroID, macroName, spell.icon, MouseOverMainFrame:GetMacroBody(spellName))
 		end
 		for i=1, 120 do
@@ -214,6 +225,4 @@ function MouseOverMainFrame:RemoveMouseOver(spell)
 	end
 	DeleteMacro(macroName)
 end
-
---MultipleBarD'action (option ?)
 
