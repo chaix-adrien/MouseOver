@@ -5,6 +5,7 @@ function MouseOverMainFrame:OnEvent(event, arg1)
 		if (MouseOverSaved == nil) then
 			MouseOverSaved = {}
 			MouseOverSaved.SpellMO = {}
+			
 		end
 		MouseOverMainFrame:LoadSpellMO()
 	end
@@ -44,7 +45,9 @@ function MouseOverMainFrame:LoadSpellMO()
 	end
 	MouseOverSaved.SpellMOCount = 0
 	for name,spell in pairs(MouseOverSaved.SpellMO) do
-		MouseOverMainFrame:AddSpellToMO(MouseOverMainFrame:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
+		if (IsPlayerSpell(spell.spellID)) then
+			MouseOverMainFrame:AddSpellToMO(MouseOverMainFrame:CreateSpellFrame(spell, MouseOverMainFrame.scrollable.content))
+		end
 	end
 end
 
@@ -95,8 +98,8 @@ function MouseOverMainFrame:AddSpellToMO(frame)
 			if (self.removeButton) then self.removeButton:Hide() end
 		end
 	end)
-	if (MouseOverSaved.SpellMOCount * 70 + 10 > MouseOverMainFrame.scrollable:GetHeight()) then
-		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, MouseOverSaved.SpellMOCount * 70 - MouseOverMainFrame.scrollable:GetHeight() + 10)
+	if (MouseOverSaved.SpellMOCount * 100 + 10 > MouseOverMainFrame.scrollable:GetHeight()) then
+		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, MouseOverSaved.SpellMOCount * 100 - MouseOverMainFrame.scrollable:GetHeight() + 10)
 	else
 		MouseOverMainFrame.scrollable.slider:SetMinMaxValues(0, 1)
 	end
@@ -152,7 +155,7 @@ function MouseOverMainFrame:OpenAddMenu()
 			for j = 1, tabNumSpells do
 				local skillType, spellId = GetSpellBookItemInfo(tabOffset + j, "bookType")
 				local spell = GetMySpellInfo(spellId)
-				if (IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name]) then
+				if (IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name] and not IsPassiveSpell(spell.name)) then
 					MouseOverAddMenu:AddSpellToContent(spell, count)
 					count = count + 1
 				end
