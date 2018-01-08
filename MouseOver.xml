@@ -50,7 +50,7 @@
 			<OnMouseWheel>
 				local value = self:GetVerticalScroll()
 				local minValue, maxValue = self.slider:GetMinMaxValues()
-				local newValue = value + delta * -10
+				local newValue = value + delta * -20
 				if (newValue >= minValue and newValue &lt; maxValue) then
 					self:SetVerticalScroll(newValue)
 					self.slider:SetValue(newValue)
@@ -58,7 +58,7 @@
 			</OnMouseWheel>
 			</Scripts>
 			<Frames>
-				<Slider name="SliderAdd" inherits="MySlider_Template" parentKey="slider" frameStrata="HIGH">
+				<Slider name="SliderAdd" inherits="MySlider_Template" parentKey="slider" frameStrata="DIALOG">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset x="-10" y="0"/>
@@ -70,7 +70,7 @@
 					  </OnValueChanged>
 					</Scripts>     
 				</Slider>
-				<Frame name="ScrollContent" hidden="false"  parentKey="content" frameStrata="MEDIUM">
+				<Frame name="ScrollContent" hidden="false"  parentKey="content" frameStrata="HIGH">
 					<Size x="400" y="480"/>
 					<Anchors>
 						<Anchor point="RIGHT"/>
@@ -83,7 +83,7 @@
 				</Frame>
 			</Frames>
 		  </ScrollFrame>
-		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="CLOSE" parentKey="buttonClose" frameStrata="HIGH">
+		  <Button name="$parentButtonClose" inherits="OptionsButtonTemplate" text="CLOSE" parentKey="buttonClose" frameStrata="DIALOG">
 		  <Anchors>
 			<Anchor point="BOTTOMRIGHT">
 			  <Offset x="-12" y="16"/>
@@ -98,14 +98,14 @@
   
  
  
- <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" >
+ <Frame name="MouseOverMainFrame" hidden="false" inherits="ScrollableFrame" frameStrata="HIGH">
 	<Anchors>
         <Anchor point="RIGHT">
 			<Offset x="-100"/>
 		</Anchor>
     </Anchors>
 	<Frames>
-		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="ADD" parentKey="buttonAdd" frameStrata="HIGH">
+		<Button name="$parentButtonAdd" inherits="OptionsButtonTemplate" text="ADD" parentKey="buttonAdd" frameStrata="DIALOG">
 		  	<Size x="200" y="30"/>
 		  <Anchors>
 			<Anchor point="TOP">
@@ -116,7 +116,7 @@
 			<OnClick> self:GetParent():OpenAddMenu(); </OnClick>
 		  </Scripts>
 		</Button>
-		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply" frameStrata="HIGH">
+		<Button name="$parentButtonApply" inherits="OptionsButtonTemplate" text="APPLY" parentKey="buttonApply" frameStrata="DIALOG">
 		  	<Size x="150" y="30"/>
 		  <Anchors>
 			<Anchor point="BOTTOM" relativePoint="BOTTOM">
