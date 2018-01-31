@@ -158,7 +158,7 @@ function MouseOverMainFrame:OpenAddMenu()
 			for j = 1, tabNumSpells do
 				local skillType, spellId = GetSpellBookItemInfo(tabOffset + j, "bookType")
 				local spell = GetMySpellInfo(spellId)
-				if (IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name] and not IsPassiveSpell(spell.name)) then
+				if (spell and spell.spellID and IsPlayerSpell(spell.spellID) and not MouseOverSaved.SpellMO[spell.name] and not IsPassiveSpell(spell.name)) then
 					MouseOverAddMenu:AddSpellToContent(spell, count)
 					count = count + 1
 				end
