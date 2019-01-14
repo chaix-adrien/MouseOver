@@ -174,7 +174,7 @@ function MouseOverMainFrame:OpenAddMenu()
 end
 
 function MouseOverMainFrame:GetMacroBody(spellName)
-	return "#showtooltip " .. spellName .. "\n/cast [modifier, target=player] " .. spellName .. "\n/cast [target=mouseover, exists, help][] " .. spellName
+	return "#showtooltip "  .. "\n/cast [@mouseover,exists][@target,exists][@player] " .. spellName
 end
 
 function MouseOverMainFrame:ApplyMouseOver()
